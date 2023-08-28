@@ -34,6 +34,7 @@ void MEMORY_COPY(byte *src, byte *dest, uint length)
     }
 }
 
+// Sets the
 void MEMORY_SET(byte *src, byte value, uint length)
 {
     int i = length;

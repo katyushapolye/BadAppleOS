@@ -1,5 +1,12 @@
-
-sh ./clear.sh
+rm Bootloader/bin/*
+rm Bootloader/object/*
+rm iso/*
+rm Kernel/bin/*
+rm Kernel/object/*
+rm PCKDMP.txt
+rm PCK.dis
+rm DMP.TXT
+rm dmp.txt
 
 nasm -f bin Bootloader/boot.asm -o Bootloader/bin/Bootloader.bin -I Bootloader/
 
