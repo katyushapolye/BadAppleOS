@@ -16,7 +16,7 @@ void PRINT_STR(char *string, int size)
 }
 
 // Just basic thing to get us running to the bare minimum
-int CLEAR_VIDEO_MEMORY()
+void CLEAR_VIDEO_MEMORY()
 {
 
     int i = 0;
@@ -29,4 +29,13 @@ int CLEAR_VIDEO_MEMORY()
     }
 
     return;
+}
+
+void printCharToPosition(char c, int x, int y)
+{
+
+    char *position = VIDEO_TEXT_MEMORY_START + ((2 * TEXT_SCREEN_WIDTH * y) + (2 * x));
+
+    *(position + 1) = BLACK_BG;
+    *position = c;
 }

@@ -1,7 +1,7 @@
 [org 0x7c00] 
 ;0x7f00 is the end of the bootsector in memory
 mov bx,0x1000 ;where to put it, from es*16 + bx(es:bx), given tthat es is zero default, it starts at bx
-mov dh,16 ;sectors to read from cl (2)
+mov dh,32 ;sectors to read from cl (2)
 mov dl,[BOOT_DRIVE] ;disk
 call READ_DISK
 

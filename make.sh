@@ -23,7 +23,7 @@ ld  --nmagic -m elf_i386 -o Kernel/bin/kernel.bin -Ttext 0x7e00 Kernel/object/* 
 
 dd if=/dev/zero of=iso/rawIso.img bs=1024 count=1440
 dd if=Bootloader/bin/Bootloader.bin of=iso/rawIso.img seek=0 count=1 conv=notrunc
-dd if=Kernel/bin/kernel.bin of=iso/rawIso.img seek=1 count=16 conv=notrunc #careful for not loading all of kernel, write more if the kernal starts getting bigger,
+dd if=Kernel/bin/kernel.bin of=iso/rawIso.img seek=1 count=32 conv=notrunc #careful for not loading all of kernel, write more if the kernal starts getting bigger,
 #each sector is 512 bytes
 
 
