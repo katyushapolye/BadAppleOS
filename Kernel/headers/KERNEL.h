@@ -3,16 +3,10 @@
 #define MEMORY_START 0x1000
 #define STACK_BASE 0x9000
 
-#define byte char
-#define uint unsigned int
-#define bool unsigned short int
-#define TRUE 1
-#define FALSE 0
-
 int _start();
 
-void MEMORY_COPY(byte *src, byte *dest, uint length);
-void MEMORY_SET(byte *src, byte value, uint length);
-void GET_GDTR(byte *destAdress);
+void MEMORY_COPY(char *src, char *dest, unsigned int length);
+void MEMORY_SET(char *src, char value, unsigned int length);
+void GET_GDTR(char *destAdress);
 
 #endif

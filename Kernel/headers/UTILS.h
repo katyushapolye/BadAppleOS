@@ -1,10 +1,17 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-// Converts a hex number to a String containing the values, not truncated, always 10 in size
+#define uint unsigned int
+#define bool unsigned short int
+#define TRUE 1
+#define FALSE 0
+
+#define NULL ((void *)0)
+
 void hexToStr(int hex, char *dest);
 
-// Convert a hex number to a string, now left zeroes and no prefix 0x
 void hexToStrRaw(int hex, char *dest);
+
+void byteToHexStr(char byte, char *dest);
 
 #endif

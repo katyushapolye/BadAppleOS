@@ -1,6 +1,6 @@
 [org 0x7c00] 
 ;0x7f00 is the end of the bootsector in memory
-mov bx,0x1000 ;where to put it, from es*16 + bx(es:bx), given tthat es is zero default, it starts at bx
+mov bx,0x500 ;where to put it, from es*16 + bx(es:bx), given tthat es is zero default, it starts at bx
 mov dh,32 ;sectors to read from cl (2)
 mov dl,[BOOT_DRIVE] ;disk
 call READ_DISK
@@ -42,14 +42,14 @@ mov ss , ax
 mov es , ax
 mov fs , ax
 mov gs , ax
-mov ebp , 0x9000 ; just trowy the stack anywhere high
+mov ebp , 0x7000 ; just trowy the stack anywhere high
 mov esp , ebp 
 
 
 mov ebx, pm_string
 call PRINT_STRING
 call CLEAR_VIDEO_MEMORY
-mov eax,0x1000
+mov eax,0x500
 jmp eax ;hardcoded entry point were we loaded our kernel
 ;we MIGHT use the C code to reposition the GDT to a better place in memory
 

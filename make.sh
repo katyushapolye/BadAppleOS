@@ -14,11 +14,11 @@ nasm -f bin Bootloader/boot.asm -o Bootloader/bin/Bootloader.bin -I Bootloader/
 
 for file in Kernel/source/*;do
     filename=$(basename $file) 
-    gcc -O0 -m32 -ffreestanding -fno-pie -c Kernel/source/$filename -o  Kernel/object/${filename%.*}.o
+    gcc -O0 -m32 -ffreestanding -fno-zero-initialized-in-bss -fno-pie -c Kernel/source/$filename -o  Kernel/object/${filename%.*}.o
 done
 
 #objcopy -O binary -j .text Kernel/object/* Kernel/bin/kernel.bin
-ld  --nmagic -m elf_i386 -o Kernel/bin/kernel.bin -Ttext 0x7e00 Kernel/object/* --oformat binary #Ttext is where the code is put INTO THE DISK ECTOR,
+ld  --nmagic -t -m elf_i386 -o Kernel/bin/kernel.bin -Ttext 0x500 Kernel/object/* --oformat binary #Ttext is where the code is put INTO THE DISK ECTOR,
 #it uses this value to calculate funcion calls and offsets, since there is no dynamic alocation, only code
 
 dd if=/dev/zero of=iso/rawIso.img bs=1024 count=1440

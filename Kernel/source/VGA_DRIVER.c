@@ -1,28 +1,38 @@
 
 #include "../headers/VGA_DRIVER.h"
+#include "../headers/UTILS.h"
 
-// Barebones good for nothing implementation
-void PRINT_STR(char *string, int size)
+// Prints a memory dump containing 16 bytes per line, not very efficient.
+void PRINT_MEMORY_DUMP(char *adress)
 {
+    char *buffer = "00";
 
-    char *BUFFER = (char *)VIDEO_TEXT_MEMORY_START;
-    int c = 0;
-    for (int i = 0; i < 2 * size; i += 2)
+    for (int i = 0; i < 25; i++)
     {
-        BUFFER[i] = string[c];
-        c++;
-        BUFFER[i + 1] = BLACK_BG;
+
+        printHexToPosition(adress, 0, i);
+        for (int j = 12; j < 60; j += 3)
+        {
+
+            byteToHexStr((*adress), buffer);
+            printStringToPosition(buffer, j, i);
+            printStringToPosition("  ", j + 2, i);
+            (adress++);
+        }
+
+        // 0xffffffff - aa bb cc dd ee ff gg hh ii jj kk
     }
 }
 
 // Just basic thing to get us running to the bare minimum
-void CLEAR_VIDEO_MEMORY()
+void CLEAR_GPU_VIDEO_MEMORY()
 {
 
     int i = 0;
     char *buffer = (char *)VIDEO_TEXT_MEMORY_START;
     while (i < 4000)
     {
+
         *buffer = 0;
         buffer++;
         i++;
@@ -38,4 +48,66 @@ void printCharToPosition(char c, int x, int y)
 
     *(position + 1) = BLACK_BG;
     *position = c;
+}
+
+void printHexToPosition(int hex, int x, int y)
+{
+    char *str = "";
+    hexToStr(hex, str);
+
+    printStringToPosition(str, x, y);
+}
+
+// Prints a null terminated string to the designated position in the screen
+void printStringToPosition(char *c, int x, int y)
+{
+
+    int k, j = 0;
+    k = x;
+    j = y;
+
+    while (*c != '\0')
+    {
+        if (k >= 80)
+        {
+            k = 0;
+            j++;
+        }
+        printCharToPosition(*c, k, j);
+        k++;
+
+        c++;
+    }
+    /*
+    for (int i = 0; i < size; i++)
+    {
+
+        if (k >= 80)
+        {
+             k = 0;
+            j++;
+        }
+        printCharToPosition(c[i], k, j);
+        k++;
+    }
+    */
+}
+
+// Careful
+void SWAP_BUFFER(char buffer[25][80])
+{
+
+    char *VIDEOMEM = VIDEO_TEXT_MEMORY_START;
+
+    for (int i = 0; i < 25; i++)
+    {
+        for (int j = 0; j < 80; j++)
+        {
+            (*VIDEOMEM) = buffer[i][j];
+            *(VIDEOMEM + 1) = 0x0f;
+            VIDEOMEM += 2;
+        }
+    }
+
+    printHexToPosition(buffer[0], 32, 1); // Printing hex values for the first row
 }
