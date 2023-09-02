@@ -23,25 +23,10 @@ int _start()
     // remember to load more sectors from bootloader and write more sectors on the burn of the iso
 
     // NEW GDT Init
-
-    struct GDT GLOBAL_DESCRITOR_TABLE;
-    struct GDTR GLOBAL_DESCRITOR_TABLE_REGISTER;
-    INIT_GDTR(&GLOBAL_DESCRITOR_TABLE_REGISTER);
-    INIT_GDT(&GLOBAL_DESCRITOR_TABLE);
-    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE, 0x800, sizeof(struct GDT));
-    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE_REGISTER, 0x800 + sizeof(struct GDT), sizeof(struct GDTR));
-
-    SET_GDTR(0x800 + sizeof(struct GDT));
-
+    INIT_TABLES();
     // Why the fuck is the kernel also loaded in this adress?, dont matter but why?
-    PRINT_MEMORY_DUMP(0X800);
+    PRINT_MEMORY_DUMP(GET_GTD_BASE_ADRESS());
 
-    int GDT_BASE_ADRESS = 0;
-    unsigned int gdt[1];
-    GET_GDTR(gdt);
-    GDT_BASE_ADRESS = gdt[0] >> (16);
-
-    PRINT_MEMORY_DUMP(GDT_BASE_ADRESS);
     while (1)
     {
     }
@@ -71,31 +56,17 @@ void MEMORY_SET(char *src, char value, uint length)
     }
 }
 
-// Writes on destAdress the contents of the GDTR
-void GET_GDTR(char *destAdress)
+// Inits the GDT and IDT to the respective agreed memory adresses
+void INIT_TABLES()
 {
-    asm volatile(
-        "sgdt %0"
-        : "=m"(*destAdress)
-        :
-        : "memory"
+    // Initialization of the GDT
+    struct GDT GLOBAL_DESCRITOR_TABLE;
+    struct GDTR GLOBAL_DESCRITOR_TABLE_REGISTER;
+    INIT_GDTR(&GLOBAL_DESCRITOR_TABLE_REGISTER);
+    INIT_GDT(&GLOBAL_DESCRITOR_TABLE);
+    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE, GTD_BASE_ADRESS, sizeof(struct GDT));
+    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE_REGISTER, GTD_BASE_ADRESS + sizeof(struct GDT), sizeof(struct GDTR));
+    SET_GDTR(0x800 + sizeof(struct GDT));
 
-    );
-}
-
-void SET_GDTR(char *srcAdress)
-{
-    asm volatile(
-        "lgdt %0"
-        : "=m"(*srcAdress)
-        :
-        : "memory"
-
-    );
-}
-
-void INIT_GDTR(struct GDTR *gdtr)
-{
-    gdtr->size = sizeof(struct GDT); // 3 segs, each valued at 8 byes
-    gdtr->base = 0x800;
-}
+    // Initialization of the GDT
+};

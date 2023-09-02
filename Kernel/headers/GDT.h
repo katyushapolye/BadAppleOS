@@ -63,4 +63,10 @@ struct GDT // Fixed on two segs, overlapping, the barely functional barebones im
     unsigned char DATA_BASE_TOP; // 0x00;
 } __attribute__((packed));
 
+void SET_GDTR(char *srcAdress);
+
+void GET_GDTR(char *destAdress);
+
+void INIT_GDTR(struct GDTR *gdtr);
+
 void INIT_GDT(struct GDT *gdt);

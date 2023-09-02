@@ -21,7 +21,10 @@ $(BIN_DIR)/kernel.bin: $(OBJ_FILES)
 clean:
 	rm -rf $(OBJ_DIR)/*.o $(BIN_DIR)/kernel.bin
 
-# Add a new target to create the ISO image
+dump-obj:
+	./dump.sh
+
+# Add a new target to cr	eate the ISO image
 iso: $(BIN_DIR)/kernel.bin
 	dd if=/dev/zero of=iso/rawIso.img bs=1024 count=1440
 	dd if=Bootloader/bin/Bootloader.bin of=iso/rawIso.img seek=0 count=1 conv=notrunc
@@ -36,5 +39,5 @@ run-vm: iso-image
 	qemu-system-i386 -cdrom iso/myos.iso
 
 # Include a target to perform all steps at once
-build-and-run: clean run-vm
+build-and-run: clean dump-obj run-vm
 

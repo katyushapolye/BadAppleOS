@@ -18,8 +18,8 @@ for file in "$directory"/*; do
         filename=$(basename "$file")
         
         # Execute objdump command and save output to a text file
-        objdump -s "$file" > "${directorydump}/${filename}2.txt"
-        echo "objdump -s $file > ${directorydump}/${filename}2.txt"
+        objdump -s "$file" > "${directorydump}/${filename}.txt"
+        echo "objdump -s $file > ${directorydump}/${filename}.txt"
     fi
 done
 
