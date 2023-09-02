@@ -1,29 +1,9 @@
 #include "../headers/KERNEL.h"
 #include "../headers/VGA_DRIVER.h"
 #include "../headers/UTILS.h"
+#include "../headers/GDT.h"
 
-/* The memory  shall be set as
-
-//0x000 ->
-//0x200 -> 0x299 -> new GDT
-//0x300 -> 0x499 -> IDT, can it fit?
-
-// 0x500 -> start of the kernel code, undefined in size
-
-
-
-
-
-// 0x7000 stack base adress
-
-
-0x7d20-(0x7d20 + 42) -> old GDT -> need to change
-
-should be free from here until 0xb8000, VGA memory, not mapped to physical
-
-
-
-//BETTER IDEA
+/*/BETTER IDEA
 
 
 0x0 -> 0x799 IDT 8bytes per register, 256 registers
@@ -42,29 +22,33 @@ int _start()
     // Careful because we might need to load more sectors from the disk
     // remember to load more sectors from bootloader and write more sectors on the burn of the iso
 
+    // NEW GDT Init
+
+    struct GDT GLOBAL_DESCRITOR_TABLE;
+    struct GDTR GLOBAL_DESCRITOR_TABLE_REGISTER;
+    INIT_GDTR(&GLOBAL_DESCRITOR_TABLE_REGISTER);
+    INIT_GDT(&GLOBAL_DESCRITOR_TABLE);
+    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE, 0x800, sizeof(struct GDT));
+    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE_REGISTER, 0x800 + sizeof(struct GDT), sizeof(struct GDTR));
+
+    SET_GDTR(0x800 + sizeof(struct GDT));
+
+    // Why the fuck is the kernel also loaded in this adress?, dont matter but why?
+    PRINT_MEMORY_DUMP(0X800);
+
     int GDT_BASE_ADRESS = 0;
     unsigned int gdt[1];
     GET_GDTR(gdt);
-    GDT_BASE_ADRESS = gdt[0] >> (16); // little trick
-                                      // not a good ideia to pass these as a parameter
+    GDT_BASE_ADRESS = gdt[0] >> (16);
 
-    // MEMORY_SET(0x0, 0xff, 0x90);
-    // MEMORY_SET(0x90, 0xee, 0x90);
-
-    // MEMORY_SET(0x120, 0x00, 0x90);
-
-    // Why the fuck is the kernel also loaded in this adress?
-    PRINT_MEMORY_DUMP(0x7d00);
-    // PRINT_MEMORY_DUMP(0x500);
-    MEMORY_SET(0x07e00, 0, 0xfffff); // clearing the whole memory
-    PRINT_MEMORY_DUMP(0x07d00);
-
+    PRINT_MEMORY_DUMP(GDT_BASE_ADRESS);
     while (1)
     {
     }
     return 0;
 }
 
+// Copies the memory from src to dest, all the way to length
 void MEMORY_COPY(char *src, char *dest, uint length)
 {
     for (int i = 0; i < length; i++)
@@ -74,7 +58,7 @@ void MEMORY_COPY(char *src, char *dest, uint length)
     }
 }
 
-// Sets the
+// Sets the memory to value starting from src until the length
 void MEMORY_SET(char *src, char value, uint length)
 {
     int i = length;
@@ -97,4 +81,21 @@ void GET_GDTR(char *destAdress)
         : "memory"
 
     );
+}
+
+void SET_GDTR(char *srcAdress)
+{
+    asm volatile(
+        "lgdt %0"
+        : "=m"(*srcAdress)
+        :
+        : "memory"
+
+    );
+}
+
+void INIT_GDTR(struct GDTR *gdtr)
+{
+    gdtr->size = sizeof(struct GDT); // 3 segs, each valued at 8 byes
+    gdtr->base = 0x800;
 }

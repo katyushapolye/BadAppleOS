@@ -28,4 +28,6 @@ void printStringToPosition(char *c, int x, int y);
 // Prints a Hex to the given screen coords
 void printHexToPosition(int hex, int x, int y);
 
+void test1();
+
 #endif

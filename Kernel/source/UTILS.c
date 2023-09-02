@@ -64,11 +64,9 @@ void hexToStrRaw(int hex, char *dest)
         }
         c++;
     }
-
-    dest[c + 1] = '\0';
 }
 
-// Converts a single byte to a Two digit decimal, with trailing zeroes and no 0x prefix, used for memory dumps
+// Converts a single byte to a Two digit Hexdecimal, with trailing zeroes and no 0x prefix, used for memory dumps
 void byteToHexStr(char byte, char *dest)
 {
 

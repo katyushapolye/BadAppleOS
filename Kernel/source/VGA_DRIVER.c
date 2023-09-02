@@ -24,6 +24,11 @@ void PRINT_MEMORY_DUMP(char *adress)
     }
 }
 
+void test1()
+{
+    return;
+}
+
 // Just basic thing to get us running to the bare minimum
 void CLEAR_GPU_VIDEO_MEMORY()
 {

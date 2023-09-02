@@ -29,7 +29,7 @@ GDT_END : ; The reason for putting a label at the end of the
 ; the size of the GDT for the GDT decriptor ( below )
 ; GDT descriptior
 GDT_DESCRIPTOR :
-dw GDT_END - GDT_END - 1 ; Size of our GDT , always less one
+dw GDT_END - GDT_START - 1 ; Size of our GDT , always less one
 ; of the true size
 dd GDT_START ; Start address of our GDT
 ; Define some handy constants for the GDT segment descriptor offsets , which
