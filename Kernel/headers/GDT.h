@@ -70,3 +70,5 @@ void GET_GDTR(char *destAdress);
 void INIT_GDTR(struct GDTR *gdtr);
 
 void INIT_GDT(struct GDT *gdt);
+
+int GET_GTD_BASE_ADRESS();
