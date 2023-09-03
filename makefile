@@ -1,7 +1,7 @@
 CC = gcc
 LD = ld
 AS = nasm
-CFLAGS = -O0 -m32 -ffreestanding -fno-zero-initialized-in-bss -fno-pie -mgeneral-regs-only
+CFLAGS = -O0 -m32 -ffreestanding -fno-pie -mgeneral-regs-only
 LDFLAGS = --nmagic -m elf_i386 -Ttext 0x2000 --oformat binary
 ASFLAGS = -f elf
 
@@ -33,19 +33,18 @@ clean:
 dump-obj:
 	./dump.sh
 
-# Add a new target to create the ISO image
+# Add a new target to create the floppy img
 iso: $(BIN_DIR)/kernel.bin
-	dd if=/dev/zero of=iso/rawIso.img bs=1024 count=1440
+	dd if=/dev/zero of=iso/rawIso.img bs=20k count=144
 	dd if=Bootloader/bin/Bootloader.bin of=iso/rawIso.img seek=0 count=1 conv=notrunc
-	dd if=$(BIN_DIR)/kernel.bin of=iso/rawIso.img seek=1 count=32 conv=notrunc
+	dd if=$(BIN_DIR)/kernel.bin of=iso/rawIso.img seek=1 bs=512 count=2048 conv=notrunc
 
 # Add a new target to create the ISO file
 iso-image: iso
-	genisoimage -V 'MYOS' -input-charset iso8859-1 -o iso/myos.iso -b rawIso.img -hide rawIso.img iso/
+	genisoimage -o iso/myos.iso -b rawIso.img iso/ 
 
 # Add a target to run a virtual machine (e.g., QEMU)
 run-vm: iso-image
-	qemu-system-i386 -cdrom iso/myos.iso
-
+	qemu-system-i386 -m 4096 -cdrom iso/myos.iso
 # Include a target to perform all steps at once
 build-and-run: clean dump-obj run-vm

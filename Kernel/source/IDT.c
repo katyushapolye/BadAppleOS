@@ -32,12 +32,12 @@ void INIT_IDT()
     }
 
     // Particular types of except/int
-
+    //
     INIT_GATE(&IDT, 0, &DIV_BY_ZERO, TRAP_GATE_TYPE);
 
     // some retarded test
     INIT_GATE(&IDT, 32, &PIT_INTERRUPT, INTERRUPT_GATE_TYPE);
-    INIT_GATE(&IDT, 33, &KEYBOARD_INTERRUPT, INTERRUPT_GATE_TYPE);
+    INIT_GATE(&IDT, 33, &KERNEL_PANIC, INTERRUPT_GATE_TYPE);
 
     // Copies the struct to the begging of the agreed mem location
     MEMORY_COPY(&IDT, 0x0, 0x800);

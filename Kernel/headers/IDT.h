@@ -56,8 +56,8 @@ typedef struct
     unsigned int eip;
     unsigned int cs;
     unsigned int eflags;
-    unsigned int sp;
-    unsigned int ss;
+    // unsigned int sp;
+    // unsigned int ss;
 
 } __attribute__((packed)) INTERRUPT_FRAME;
 

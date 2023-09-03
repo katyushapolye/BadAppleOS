@@ -6,7 +6,11 @@
 #include "../headers/IDT.h"
 #include "../headers/IO.h"
 
+// #include "../headers/frames.h"
 /*
+
+WE NEED TO READ A LOT OF SECTORS FROM DISK FOR THIS TO WORK
+
 I STILL HAVENT DECIDED A GOOD CONVENTION FOR NAMING FUNCTIONS AND DATA
 IM BASICALLY WRITING IN ALL CAPS EVERYTHING I FIND IT VERY IMPORTANT OR ARCHAIC AND
 IN NORMAL CAMELCASING LESS IMPORTANT THINGS
@@ -17,8 +21,7 @@ AT LEAST CONSTANTS AND DEFINES ARE ALWAYS IN ALL CAPS
 IVE ALSO HAVE NOT MADE A DEFINITIONS HEADERS, SO IM JUST WRITING EVERYTIME
 UNSIGNED SHORT INT INSTEAD OF SOMETHINK LIKE u_sint or some shit
 
-I also need to check if the A21 line is active, I'm programming like it is but I think it is not since
-if i write to a high adress it just fucking implodes my code
+I also need to check if the A20 line is active, I'm programming like -> IT IS i think
 
 
 The memory layout shall be as follows
@@ -30,6 +33,8 @@ The memory layout shall be as follows
 
 0x2000 -> start of kernel code
 
+0x0000 -> stack on the boot
+
 
 */
 
@@ -37,17 +42,16 @@ int _start()
 {
 
     // Careful because we might need to load more sectors from the disk
-    // remember to load more sectors from bootloader and write more sectors on the burn of the iso
+    //  We need to activate the a20 lines so we dont mess up
 
-    int *clock = 0x5000;
-    (*clock) = 0;
     INIT_TABLES();
     ENABLE_INTERRUPTS();
-
     disableCursor();
-    printStringToPosition("Timer: ", 0, 5);
+    checkA20();
+
     while (1)
     {
+        printStringToPosition("Timer: ", 0, 5);
         printHexToPosition(*((int *)(0x5000)), 9, 5);
     }
     return 0;
@@ -100,4 +104,20 @@ void ENABLE_INTERRUPTS()
 void DISABLE_INTERRUPTS()
 {
     asm volatile("cli");
+}
+
+int checkA20()
+{
+    unsigned char *base_ptr = (unsigned char *)0x00100000; // Address beyond 1MB
+
+    *base_ptr = 0x55;
+
+    if (*base_ptr == 0x55)
+    {
+        printStringToPosition("A20 is enabled...", 0, 2);
+    }
+    else
+    {
+        printStringToPosition("A20 IS DISABLED", 0, 2);
+    }
 }

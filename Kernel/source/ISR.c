@@ -27,8 +27,8 @@ void KERNEL_PANIC(INTERRUPT_FRAME *context)
     printHexToPosition(context->eip, 11, 2);
     printHexToPosition(context->cs, 11, 3);
     printHexToPosition(context->eflags, 11, 4);
-    printHexToPosition(context->sp, 11, 5);
-    printHexToPosition(context->ss, 11, 6);
+    // printHexToPosition(context->sp, 11, 5);
+    // printHexToPosition(context->ss, 11, 6);
     __asm__("hlt");
     return; // never reached
 };

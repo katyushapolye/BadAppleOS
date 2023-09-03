@@ -1,9 +1,16 @@
 [org 0x7c00] 
 ;0x7f00 is the end of the bootsector in memory
+; we might need a loop here to read everything, at leats 10 times
+
+
+
+
+
 mov bx,0x2000 ;where to put it, from es*16 + bx(es:bx), given tthat es is zero default, it starts at bx
-mov dh,32 ;sectors to read from cl (2)
+mov dh,32 ;sectors to read from cl (2) read 255
 mov dl,[BOOT_DRIVE] ;disk
 call READ_DISK
+
 
 
 
@@ -42,7 +49,7 @@ mov ss , ax
 mov es , ax
 mov fs , ax
 mov gs , ax
-mov ebp , 0x7000 ; just trowy the stack anywhere high
+mov ebp , 0x9000 ; just trowy the stack anywhere high
 mov esp , ebp 
 
 

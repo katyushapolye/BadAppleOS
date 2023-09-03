@@ -2,6 +2,8 @@
   "files.associations": {
     "vga_driver.h": "c",
     "utils.h": "c",
-    "io.h": "c"
+    "io.h": "c",
+    "frames.h": "c",
+    "kernel.h": "c"
   }
 }
