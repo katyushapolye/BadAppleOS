@@ -27,6 +27,7 @@ $(BIN_DIR)/kernel.bin: $(OBJ_FILES_C) $(OBJ_FILES_ASM)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 clean:
+	rm iso/*
 	rm -rf $(OBJ_DIR)/*.o $(BIN_DIR)/kernel.bin
 
 dump-obj:
