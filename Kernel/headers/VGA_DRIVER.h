@@ -10,6 +10,10 @@
 
 #define BLACK_BG 0x0f
 
+#define DAC_CONTROL_PORT 0x3d4
+#define DAC_DATA_PORT 0x3d5
+#define DAC_INDEX_CURSOR_START 0xa
+
 // Clears the whole video memory, can throw exception if no buffer has been set
 void CLEAR_GPU_VIDEO_MEMORY();
 

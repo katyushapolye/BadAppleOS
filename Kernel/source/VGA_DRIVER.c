@@ -20,17 +20,19 @@ void PRINT_MEMORY_DUMP(char *adress)
             printStringToPosition("  ", j + 2, i);
             (adress++);
         }
-
-        // 0xffffffff - aa bb cc dd ee ff gg hh ii jj kk
     }
 }
 
 void disableCursor()
 {
-    // some witchcraft logic here because of old VGA hardware
-    outByte(0xa, 0x3d4);  // sends the index of the register we want to write throught the data register
-    outByte(0x10, 0x3d5); // writes to the register indexed by the previous instruction
+    // some witchcraft logic here because of old VGA hardware, need definition of ports 4 fuck sake
+    OUT_BYTE(DAC_INDEX_CURSOR_START, DAC_CONTROL_PORT); // sends the index of the register we want to write throught the data register
+    OUT_BYTE(0x10, DAC_DATA_PORT);                      // writes to the register indexed by the previous instruction
+    // 0 0 0 1 0 0 0 0 = 0x10 the fifth bit is 1 for disable cursor and 0 for enable
     return;
+    // 0x3d4 is the control port and 0x3d5 is the data port
+    // 0x3d4 recieves the index of the wanted internal register to write and i think
+    //  it also prepares the data port to receive/spit out a byte
 }
 
 // Just basic thing to get us running to the bare minimum

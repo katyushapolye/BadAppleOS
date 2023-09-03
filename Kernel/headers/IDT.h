@@ -4,6 +4,11 @@
 #define TRAP_GATE_TYPE 0x8f
 #define INTERRUPT_GATE_TYPE 0x8e
 
+#define PIC_MASTER_CONTROL_PORT 0x20
+#define PIC_MASTER_DATA_PORT 0x21
+
+#define PIC_SLAVE_CONTROL_PORT 0xa1
+#define PIC_SLAVE_DATA_PORT 0xa0
 struct IDTR
 {
     unsigned short int size;

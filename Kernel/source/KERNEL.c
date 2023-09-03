@@ -6,16 +6,30 @@
 #include "../headers/IDT.h"
 #include "../headers/IO.h"
 
-/*/BETTER IDEA
+/*
+I STILL HAVENT DECIDED A GOOD CONVENTION FOR NAMING FUNCTIONS AND DATA
+IM BASICALLY WRITING IN ALL CAPS EVERYTHING I FIND IT VERY IMPORTANT OR ARCHAIC AND
+IN NORMAL CAMELCASING LESS IMPORTANT THINGS
+DOESNT WORK VERY WELL BU WHAT CAN I DO
+I'LL PROBABLY NEVER FIX THIS
+
+AT LEAST CONSTANTS AND DEFINES ARE ALWAYS IN ALL CAPS
+IVE ALSO HAVE NOT MADE A DEFINITIONS HEADERS, SO IM JUST WRITING EVERYTIME
+UNSIGNED SHORT INT INSTEAD OF SOMETHINK LIKE u_sint or some shit
+
+I also need to check if the A21 line is active, I'm programming like it is but I think it is not since
+if i write to a high adress it just fucking implodes my code
 
 
+The memory layout shall be as follows
 0x0 -> 0x799 IDT 8bytes per register, 256 registers
 
 0x800 -> 0x999 GDT 8 bytes per register, 3 registers, one null and one for code and one for data, put GTDR right after the end
 
 0x1000 to 0x2000 -> video buffer for text manipulation
 
-0x2000 -> start of kernel
+0x2000 -> start of kernel code
+
 
 */
 
@@ -25,13 +39,16 @@ int _start()
     // Careful because we might need to load more sectors from the disk
     // remember to load more sectors from bootloader and write more sectors on the burn of the iso
 
+    int *clock = 0x5000;
+    (*clock) = 0;
     INIT_TABLES();
-    // ENABLE_INTERRUPTS(); DONT ENABLE YET BECAUSE OF THE IRQ PIC and INTEL CONFLIX
+    ENABLE_INTERRUPTS();
 
     disableCursor();
-    printStringToPosition("Halting execution,IO test ", 0, 0xe);
+    printStringToPosition("Timer: ", 0, 5);
     while (1)
     {
+        printHexToPosition(*((int *)(0x5000)), 9, 5);
     }
     return 0;
 }
