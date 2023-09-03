@@ -8,7 +8,7 @@ call READ_DISK
 
 
 
-cli ;clear all the IVT
+cli ;disables interrupt line
 lgdt [GDT_DESCRIPTOR]
 mov bx,loadedGDT
 mov cx,25

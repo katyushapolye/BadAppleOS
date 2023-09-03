@@ -1,21 +1,29 @@
 CC = gcc
 LD = ld
-CFLAGS = -O0 -m32 -ffreestanding -fno-zero-initialized-in-bss -fno-pie
+AS = nasm
+CFLAGS = -O0 -m32 -ffreestanding -fno-zero-initialized-in-bss -fno-pie -mgeneral-regs-only
 LDFLAGS = --nmagic -m elf_i386 -Ttext 0x2000 --oformat binary
+ASFLAGS = -f elf
 
 SRC_DIR = Kernel/source
 OBJ_DIR = Kernel/object
 BIN_DIR = Kernel/bin
 
-SRC_FILES = $(SRC_DIR)/KERNEL.c  $(wildcard $(SRC_DIR)/*.c)
-OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+# List your C source files explicitly, ensuring KERNEL.c is the first.
+SRC_FILES_C = $(SRC_DIR)/KERNEL.c $(wildcard $(SRC_DIR)/*.c)
+OBJ_FILES_C = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES_C))
+SRC_FILES_ASM = $(wildcard $(SRC_DIR)/*.asm)
+OBJ_FILES_ASM = $(patsubst $(SRC_DIR)/%.asm,$(OBJ_DIR)/%.o,$(SRC_FILES_ASM))
 
 all: $(BIN_DIR)/kernel.bin
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BIN_DIR)/kernel.bin: $(OBJ_FILES)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.asm
+	$(AS) $(ASFLAGS) $< -o $@
+
+$(BIN_DIR)/kernel.bin: $(OBJ_FILES_C) $(OBJ_FILES_ASM)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 clean:
@@ -24,7 +32,7 @@ clean:
 dump-obj:
 	./dump.sh
 
-# Add a new target to cr	eate the ISO image
+# Add a new target to create the ISO image
 iso: $(BIN_DIR)/kernel.bin
 	dd if=/dev/zero of=iso/rawIso.img bs=1024 count=1440
 	dd if=Bootloader/bin/Bootloader.bin of=iso/rawIso.img seek=0 count=1 conv=notrunc
@@ -40,4 +48,3 @@ run-vm: iso-image
 
 # Include a target to perform all steps at once
 build-and-run: clean dump-obj run-vm
-

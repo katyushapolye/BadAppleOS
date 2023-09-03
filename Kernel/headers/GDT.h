@@ -1,6 +1,6 @@
 
 #define GDT_H
-#define GTD_BASE_ADRESS 0x800
+#define GDT_BASE_ADRESS 0x800
 
 struct GDTR
 {
@@ -69,6 +69,6 @@ void GET_GDTR(char *destAdress);
 
 void INIT_GDTR(struct GDTR *gdtr);
 
-void INIT_GDT(struct GDT *gdt);
+void INIT_GDT();
 
-int GET_GTD_BASE_ADRESS();
+int GET_GDT_BASE_ADRESS();

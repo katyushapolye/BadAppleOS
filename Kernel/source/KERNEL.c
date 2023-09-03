@@ -2,6 +2,8 @@
 #include "../headers/VGA_DRIVER.h"
 #include "../headers/UTILS.h"
 #include "../headers/GDT.h"
+#include "../headers/ISR.h"
+#include "../headers/IDT.h"
 
 /*/BETTER IDEA
 
@@ -22,11 +24,9 @@ int _start()
     // Careful because we might need to load more sectors from the disk
     // remember to load more sectors from bootloader and write more sectors on the burn of the iso
 
-    // NEW GDT Init
     INIT_TABLES();
-    // Why the fuck is the kernel also loaded in this adress?, dont matter but why?
-    PRINT_MEMORY_DUMP(GET_GTD_BASE_ADRESS());
 
+    printStringToPosition("Halting execution...", 0, 24);
     while (1)
     {
     }
@@ -59,14 +59,25 @@ void MEMORY_SET(char *src, char value, uint length)
 // Inits the GDT and IDT to the respective agreed memory adresses
 void INIT_TABLES()
 {
-    // Initialization of the GDT
-    struct GDT GLOBAL_DESCRITOR_TABLE;
-    struct GDTR GLOBAL_DESCRITOR_TABLE_REGISTER;
-    INIT_GDTR(&GLOBAL_DESCRITOR_TABLE_REGISTER);
-    INIT_GDT(&GLOBAL_DESCRITOR_TABLE);
-    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE, GTD_BASE_ADRESS, sizeof(struct GDT));
-    MEMORY_COPY(&GLOBAL_DESCRITOR_TABLE_REGISTER, GTD_BASE_ADRESS + sizeof(struct GDT), sizeof(struct GDTR));
-    SET_GDTR(0x800 + sizeof(struct GDT));
 
-    // Initialization of the GDT
+    INIT_GDT();
+    INIT_IDT();
+
+    char *buffer = "Adress of Loaded IDT: ";
+    printStringToPosition(buffer, 0, 0);
+    printHexToPosition(GET_IDT_BASE_ADRESS(), 24, 0);
+    buffer = "Adress of Loaded GDT: ";
+
+    printStringToPosition(buffer, 0, 1);
+    printHexToPosition(GET_GDT_BASE_ADRESS(), 24, 1);
 };
+
+void ENABLE_INTERRUPTS()
+{
+    asm volatile("sti");
+}
+
+void DISABLE_INTERRUPTS()
+{
+    asm volatile("cli");
+}
