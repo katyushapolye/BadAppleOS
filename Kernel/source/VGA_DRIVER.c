@@ -1,6 +1,7 @@
 
 #include "../headers/VGA_DRIVER.h"
 #include "../headers/UTILS.h"
+#include "../headers/IO.h"
 
 // Prints a memory dump containing 16 bytes per line, not very efficient.
 void PRINT_MEMORY_DUMP(char *adress)
@@ -24,8 +25,11 @@ void PRINT_MEMORY_DUMP(char *adress)
     }
 }
 
-void test1()
+void disableCursor()
 {
+    // some witchcraft logic here because of old VGA hardware
+    outByte(0xa, 0x3d4);  // sends the index of the register we want to write throught the data register
+    outByte(0x10, 0x3d5); // writes to the register indexed by the previous instruction
     return;
 }
 

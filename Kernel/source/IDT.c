@@ -1,6 +1,7 @@
 #include "../headers/IDT.h"
 #include "../headers/KERNEL.h"
 #include "../headers/VGA_DRIVER.h"
+#include "../headers/ISR.h"
 
 /*Initializes a Interrupt gate of type "type" to the IDT, given the routine adress and the index on the IDT
 As the GDT only contains one segment for code, the segment descriptor always inits to it*
@@ -28,6 +29,10 @@ void INIT_IDT()
     {
         INIT_GATE(&IDT, i, &DEFAULT_INTERRUPT, INTERRUPT_GATE_TYPE);
     }
+
+    // Particular types of except/int
+
+    INIT_GATE(&IDT, 0, &DIV_BY_ZERO, TRAP_GATE_TYPE);
 
     // Copies the struct to the begging of the agreed mem location
     MEMORY_COPY(&IDT, 0x0, 0x800);

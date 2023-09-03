@@ -4,6 +4,7 @@
 #include "../headers/GDT.h"
 #include "../headers/ISR.h"
 #include "../headers/IDT.h"
+#include "../headers/IO.h"
 
 /*/BETTER IDEA
 
@@ -25,8 +26,10 @@ int _start()
     // remember to load more sectors from bootloader and write more sectors on the burn of the iso
 
     INIT_TABLES();
+    // ENABLE_INTERRUPTS(); DONT ENABLE YET BECAUSE OF THE IRQ PIC and INTEL CONFLIX
 
-    printStringToPosition("Halting execution...", 0, 24);
+    disableCursor();
+    printStringToPosition("Halting execution,IO test ", 0, 0xe);
     while (1)
     {
     }

@@ -45,6 +45,7 @@ struct IDT_GATE
 } __attribute__((packed));
 
 // The things we shall push into the stack for the iretq instruction to restore
+// Is on some manual of intel what the CPU pushes into the stack
 typedef struct
 {
     unsigned int eip;

@@ -1,5 +1,7 @@
 {
   "files.associations": {
-    "vga_driver.h": "c"
+    "vga_driver.h": "c",
+    "utils.h": "c",
+    "io.h": "c"
   }
 }
