@@ -3,6 +3,7 @@
     "vga_driver.h": "c",
     "utils.h": "c",
     "io.h": "c",
-    "frames.h": "c"
+    "frames.h": "c",
+    "timer.h": "c"
   }
 }

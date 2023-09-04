@@ -2,6 +2,7 @@
 #include "../headers/VGA_DRIVER.h"
 #include "../headers/ISR.h"
 #include "../headers/IO.h"
+#include "../headers/TIMER.h"
 // This shall contain all interrupt service routines that are not the default ones
 // Its on the init idt function that these are assigned to their respective gates
 void DIV_BY_ZERO(INTERRUPT_FRAME *context)
@@ -21,27 +22,27 @@ void KERNEL_PANIC(INTERRUPT_FRAME *context)
     printStringToPosition("EIP: ", 0, 2);
     printStringToPosition("CS: ", 0, 3);
     printStringToPosition("EFLAGS: ", 0, 4);
-    printStringToPosition("SP: ", 0, 5);
-    printStringToPosition("SS: ", 0, 6);
+    // printStringToPosition("SP: ", 0, 5);
+    // printStringToPosition("SS: ", 0, 6);
 
     printHexToPosition(context->eip, 11, 2);
     printHexToPosition(context->cs, 11, 3);
     printHexToPosition(context->eflags, 11, 4);
-    printHexToPosition(context->sp, 11, 5);
-    printHexToPosition(context->ss, 11, 6);
+    // printHexToPosition(context->sp, 11, 5);
+    // printHexToPosition(context->ss, 11, 6);
     __asm__("hlt");
     return; // never reached
 };
 
 // interrupt from the PIT, triggers at a certain interval
 // every 55ms if the wiki is right
-// Ill just slap some funcking retarded test to see if is working
+// Ill just slap some fucking retarded test to see if is working
 void PIT_INTERRUPT(INTERRUPT_FRAME *contex)
 {
-    long int *clock = 0x5000;
-    (*clock)++;
+    TICK_TIME();
+
     // ack of end of the ISQ/ISR (EOI) to the PIC, only used for IRQ ints
-    OUT_BYTE(0x20, PIC_MASTER_CONTROL_PORT); // if it is on the second pic, it is also 0x20
+    OUT_BYTE(0x20, PIC_MASTER_CONTROL_PORT); // if it is on the second pic, it is also 0x20 for data and 0xa0 for the pic id
     return;
 }
 

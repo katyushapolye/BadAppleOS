@@ -6,6 +6,7 @@
 #include "../headers/IDT.h"
 #include "../headers/IO.h"
 #include "../headers/frames.h"
+#include "../headers/TIMER.h"
 
 /*
 I STILL HAVENT DECIDED A GOOD CONVENTION FOR NAMING FUNCTIONS AND DATA
@@ -19,17 +20,23 @@ IVE ALSO HAVE NOT MADE A DEFINITIONS HEADERS, SO IM JUST WRITING EVERYTIME
 UNSIGNED SHORT INT INSTEAD OF SOMETHINK LIKE u_sint or some shit
 
 I also need to check if the A21 line is active, I'm programming like it is but I think it is not since
-if i write to a high adress it just fucking implodes my code
+if i write to a high adress it just fucking implodes my code <- SOLVED
 
 
 The memory layout shall be as follows
 0x0 -> 0x799 IDT 8bytes per register, 256 registers
 
-0x800 -> 0x999 GDT 8 bytes per register, 3 registers, one null and one for code and one for data, put GTDR right after the end
+0x800 -> 0x820 GDT 8 bytes per register, 3 registers, one null and one for code and one for data, put GTDR right after the end
 
-0x1000 to 0x2000 -> video buffer for text manipulation
+0x820 -> 0x840 -> system time information
 
-0x2000 -> start of kernel code
+0x1000 to 0x2000 -> video buffer for text manipulation <- I THINK I can rewrite all of the GRUB area
+
+0xb8000 - 0xbc000-> Text GPU Buffer
+
+0xA000 -> somewhere is the GPU buffer in Video mode
+
+0x100000 -> after the first megabyte, start of kernel
 
 
 */
@@ -37,20 +44,22 @@ The memory layout shall be as follows
 int _start()
 {
 
-    // Careful because we might need to load more sectors from the disk
-    // remember to load more sectors from bootloader and write more sectors on the burn of the iso
-    CLEAR_GPU_VIDEO_MEMORY();
-    int *clock = 0x5000;
-    (*clock) = 0;
     INIT_TABLES();
     ENABLE_INTERRUPTS();
 
+    CLEAR_GPU_VIDEO_MEMORY();
+
     disableCursor();
-    printStringToPosition("Timer: ", 0, 5);
+
+    int i = 0;
     while (1)
     {
-        // printHexToPosition(*((int *)(0x5000)), 9, 5);
-        SWAP_BUFFER(frames[*((int *)(0x5000))]);
+        if (GET_SYSTEM_TIME() > 333)
+        {
+            SWAP_BUFFER(frames[i]);
+            RESET_SYSTEM_TIME();
+            i++;
+        }
     }
     return 0;
 }
@@ -104,7 +113,14 @@ void DISABLE_INTERRUPTS()
     asm volatile("cli");
 }
 
-// We will probably need a driver to read all of this...
-// #include "../headers/frames.h"
-// We also need to solve the glaring problem of having minuscule amount of space because of the floppy disk
-// emul
+void INIT_TIME_DATA()
+{
+
+    struct TIMERDATA tData;
+
+    tData.IS_HALTED = 0x0000000000000000;
+    tData.PADDING = 0x1111111111111111;
+    tData.SYS_TIME = 0x0;
+    tData.TARGET_TIME = 0x0;
+    MEMORY_COPY(&tData, TIME_DATA_ADRESS, sizeof(tData));
+}

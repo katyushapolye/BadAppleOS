@@ -119,6 +119,4 @@ void SWAP_BUFFER(char buffer[25][80])
             VIDEOMEM += 2;
         }
     }
-
-    printHexToPosition(buffer[0], 32, 1); // Printing hex values for the first row
 }

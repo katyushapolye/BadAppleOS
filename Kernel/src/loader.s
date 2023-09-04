@@ -24,6 +24,7 @@ kernel_stack:
 section .text
 mov esp, kernel_stack + KERNEL_STACK_SIZE
 
+
 .loop:
     jmp _start
 

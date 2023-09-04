@@ -8,6 +8,7 @@ SOURCE_FILES=(
     ISR.c
     UTILS.c
     VGA_DRIVER.c
+    TIMER.c
 )
 
 for source_file in "${SOURCE_FILES[@]}"; do

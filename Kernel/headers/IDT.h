@@ -56,8 +56,8 @@ typedef struct
     unsigned int eip;
     unsigned int cs;
     unsigned int eflags;
-    unsigned int sp;
-    unsigned int ss;
+    // unsigned int sp;
+    // unsigned int ss;
 
 } __attribute__((packed)) INTERRUPT_FRAME;
 
@@ -78,4 +78,10 @@ int GET_IDT_BASE_ADRESS();
 void INIT_GATE(struct IDT_GATE *IDTbaseAdress, int index, void *isr, short int type);
 
 void INIT_IDT(void);
+
+// Masks the inputs given the mask
+// Note for how the mask is used
+//   0 0 0 0 0 0 0 0 -> for each interrupt, if the bit is on the mask is set to 1, then that interrup does not goes through
+//  the fisrt int (PIT) is the first bit, so masking it would give us 0x01 = 0 0 0 0 0 0 1
+void MASK_PIC_INTERRUPTS(int MASTER_MASK, int SLAVE_MASK);
 #endif

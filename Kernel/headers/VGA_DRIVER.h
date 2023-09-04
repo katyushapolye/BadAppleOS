@@ -14,7 +14,7 @@
 #define DAC_DATA_PORT 0x3d5
 #define DAC_INDEX_CURSOR_START 0xa
 
-// Clears the whole video memory, can throw exception if no buffer has been set
+// Clears the whole video memory
 void CLEAR_GPU_VIDEO_MEMORY();
 
 // Prints a memory dump form the starting adress until the end of the screen buffer
@@ -32,6 +32,7 @@ void printStringToPosition(char *c, int x, int y);
 // Prints a Hex to the given screen coords
 void printHexToPosition(int hex, int x, int y);
 
+// Disables the VGA Cursor
 void disableCursor();
 
 #endif
