@@ -5,6 +5,7 @@
 #include "../headers/ISR.h"
 #include "../headers/IDT.h"
 #include "../headers/IO.h"
+#include "../headers/frames.h"
 
 /*
 I STILL HAVENT DECIDED A GOOD CONVENTION FOR NAMING FUNCTIONS AND DATA
@@ -38,7 +39,7 @@ int _start()
 
     // Careful because we might need to load more sectors from the disk
     // remember to load more sectors from bootloader and write more sectors on the burn of the iso
-
+    CLEAR_GPU_VIDEO_MEMORY();
     int *clock = 0x5000;
     (*clock) = 0;
     INIT_TABLES();
@@ -48,7 +49,8 @@ int _start()
     printStringToPosition("Timer: ", 0, 5);
     while (1)
     {
-        printHexToPosition(*((int *)(0x5000)), 9, 5);
+        // printHexToPosition(*((int *)(0x5000)), 9, 5);
+        SWAP_BUFFER(frames[*((int *)(0x5000))]);
     }
     return 0;
 }
@@ -101,3 +103,8 @@ void DISABLE_INTERRUPTS()
 {
     asm volatile("cli");
 }
+
+// We will probably need a driver to read all of this...
+// #include "../headers/frames.h"
+// We also need to solve the glaring problem of having minuscule amount of space because of the floppy disk
+// emul
