@@ -46,19 +46,24 @@ int _start()
 
     INIT_TABLES();
     ENABLE_INTERRUPTS();
-
     CLEAR_GPU_VIDEO_MEMORY();
+    SET_PIT();
+
+    // CLEAR_GPU_VIDEO_MEMORY();
 
     disableCursor();
 
     int i = 0;
     while (1)
     {
-        if (GET_SYSTEM_TIME() > 333)
+        // The video is a bit faster since the increases to the timer are made in 55 and 55
+        if (GET_SYSTEM_TIME() >= 33)
         {
-            SWAP_BUFFER(frames[i]);
             RESET_SYSTEM_TIME();
+            SWAP_BUFFER(frames[i]);
             i++;
+            // i++;
+            // RESET_SYSTEM_TIME();
         }
     }
     return 0;
@@ -118,9 +123,20 @@ void INIT_TIME_DATA()
 
     struct TIMERDATA tData;
 
-    tData.IS_HALTED = 0x0000000000000000;
-    tData.PADDING = 0x1111111111111111;
+    tData.IS_HALTED = 0x0000000;
+    tData.PADDING = 0xffffffff;
     tData.SYS_TIME = 0x0;
     tData.TARGET_TIME = 0x0;
     MEMORY_COPY(&tData, TIME_DATA_ADRESS, sizeof(tData));
+}
+
+// Tries to set the pit to the target frequency, will tidy later
+void SET_PIT()
+{
+
+    OUT_BYTE(0x36, 0x43); // word to control port
+
+    OUT_BYTE(0xa9, 0x40); // bits of the 1193 number
+    OUT_BYTE(0x04, 0x40); // its the int aprox for 1000hz so every tick is in 1ms
+    // there is SOME error but is negligeble
 }

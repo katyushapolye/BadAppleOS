@@ -11,14 +11,11 @@ unsigned int GET_SYSTEM_TIME()
 {
     return tData->SYS_TIME;
 }
+
 void TICK_TIME()
 {
-    if (tData->IS_HALTED)
-    {
-        return;
-    }
 
-    tData->SYS_TIME += PIT_FREQ;
+    tData->SYS_TIME += PIT_INTERVAL;
 }
 
 void START_SYSTEM_TIME()

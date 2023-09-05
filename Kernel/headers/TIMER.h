@@ -1,13 +1,14 @@
 #ifndef TIMER_H
 #define TIMER_H
 #define TIME_DATA_ADRESS 0x820 // not decied yet
-#define PIT_FREQ 55
+#define PIT__BASE_FREQ 1193182
+#define PIT_INTERVAL 1
 
 struct TIMERDATA
 {
     unsigned int SYS_TIME;    // 4 bytes
     unsigned int TARGET_TIME; // 4 bytes
-    unsigned int PADDING;     // 4 byres of 1
+    unsigned int PADDING;     // 4 byres of 1, we might use it for error correction
     unsigned int IS_HALTED;   // 4 bytesn ALL 1 IF YES, ALL 0 IF NOT
 
 } __attribute((packed)); // sze = 0x10 = 16 bytes

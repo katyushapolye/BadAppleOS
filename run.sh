@@ -1,3 +1,7 @@
+rm Kernel/object/*
+
+rm os.iso
+
 nasm -f elf32 Kernel/src/loader.s -o Kernel/object/loader.o
 #!/bin/bash
 SOURCE_FILES=(
