@@ -104,8 +104,19 @@ void DEFAULT_EXCEPT_HANDLER(INTERRUPT_FRAME *context)
 
 void DEFAULT_EXCEPT_HANDLER_ERROR_CODE(INTERRUPT_FRAME *context, unsigned int errorCode)
 {
+
     printStringToPosition("EXCEPTION TRIGGERED - ERROR CODE:", 0, 0);
+    printStringToPosition("INTERRUPT FRAME DATA: ", 0, 1);
+    printStringToPosition("EIP: ", 0, 2);
+    printStringToPosition("CS: ", 0, 3);
+    printStringToPosition("EFLAGS: ", 0, 4);
     printHexToPosition(errorCode, 35, 0);
+
+    printHexToPosition(context->eip, 11, 2);
+    printHexToPosition(context->cs, 11, 3);
+    printHexToPosition(context->eflags, 11, 4);
+
+    (context->eip)++;
 }
 
 void DEFAULT_INTERRUPT(INTERRUPT_FRAME *context)

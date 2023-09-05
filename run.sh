@@ -2,7 +2,7 @@ rm Kernel/object/*
 
 rm os.iso
 
-nasm -f elf32 Kernel/src/loader.s -o Kernel/object/loader.o
+nasm -f elf32 Kernel/src/aloader.s -o Kernel/object/aloader.o
 #!/bin/bash
 SOURCE_FILES=(
     KERNEL.c
@@ -35,6 +35,8 @@ genisoimage -R \
             -o os.iso \
             iso
 
+grub-mkrescue -o boot.iso iso
+    
             
 
-qemu-system-i386 -cdrom os.iso
+#qemu-system-i386 -cdrom os.iso
